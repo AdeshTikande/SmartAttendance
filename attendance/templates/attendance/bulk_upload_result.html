@@ -1,0 +1,69 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+
+<h3 class="mb-4">
+    <i class="fas fa-chart-pie me-2"></i> Upload Results
+</h3>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="stat-card" style="background:linear-gradient(135deg,#1b5e20,#2e7d32);">
+            <h6>Successfully Added</h6>
+            <h2>{{ success_count }}</h2>
+            <i class="fas fa-check-circle fa-2x opacity-50"></i>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card" style="background:linear-gradient(135deg,#b71c1c,#c62828);">
+            <h6>Errors</h6>
+            <h2>{{ error_count }}</h2>
+            <i class="fas fa-times-circle fa-2x opacity-50"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Success List -->
+{% if successes %}
+<div class="card mb-4">
+    <div class="card-header" style="background:linear-gradient(135deg,#1b5e20,#2e7d32);">
+        <i class="fas fa-check-circle me-2"></i>
+        Successfully Added ({{ success_count }})
+    </div>
+    <div class="card-body">
+        {% for msg in successes %}
+        <div class="alert alert-success py-2 mb-1">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Error List -->
+{% if errors %}
+<div class="card mb-4">
+    <div class="card-header" style="background:linear-gradient(135deg,#b71c1c,#c62828);">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        Errors ({{ error_count }})
+    </div>
+    <div class="card-body">
+        {% for err in errors %}
+        <div class="alert alert-danger py-2 mb-1">
+            {{ err }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="d-flex gap-2">
+    <a href="{% url 'student_list' %}" class="btn btn-primary px-4">
+        <i class="fas fa-users me-2"></i> View All Students
+    </a>
+    <a href="{% url 'bulk_upload_students' %}" class="btn btn-secondary px-4">
+        <i class="fas fa-upload me-2"></i> Upload More
+    </a>
+</div>
+
+{% endblock %}

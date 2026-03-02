@@ -1,0 +1,57 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+<h3 class="mb-4"><i class="fas fa-ticket-alt me-2"></i>Attendance Tickets</h3>
+<div class="card">
+    <div class="card-body">
+        {% for ticket in tickets %}
+        <div class="card mb-3 border-left-warning">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h5>{{ ticket.student.name }}
+                            <span class="badge badge-{{ ticket.status }} ms-2">
+                                {{ ticket.status|upper }}
+                            </span>
+                        </h5>
+                        <p class="mb-1">
+                            <i class="fas fa-calendar me-1"></i>
+                            {{ ticket.session.date }}
+                        </p>
+                        <p class="mb-1">
+                            <i class="fas fa-comment me-1"></i>
+                            {{ ticket.reason }}
+                        </p>
+                        {% if ticket.proof_image %}
+                        <a href="{{ ticket.proof_image.url }}" target="_blank" class="btn btn-sm btn-info mt-1">
+                            <i class="fas fa-image me-1"></i> View Proof
+                        </a>
+                        {% endif %}
+                        {% if ticket.status == 'pending' %}
+                        <p class="text-danger mt-2 mb-0">
+                            <i class="fas fa-clock me-1"></i>
+                            Time remaining: {{ ticket.hours_remaining|floatformat:1 }} hours
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% if ticket.status == 'pending' %}
+                    <div class="col-md-4 text-end">
+                        <form method="POST" action="{% url 'resolve_ticket' ticket.pk %}">
+                            {% csrf_token %}
+                            <button name="action" value="approve" class="btn btn-success mb-2 w-100">
+                                <i class="fas fa-check me-1"></i> Approve
+                            </button>
+                            <button name="action" value="reject" class="btn btn-danger w-100">
+                                <i class="fas fa-times me-1"></i> Reject
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-muted">No tickets yet!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

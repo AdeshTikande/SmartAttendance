@@ -1,0 +1,88 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+<h3 class="mb-4"><i class="fas fa-home me-2"></i>Dashboard</h3>
+
+{% if is_teacher %}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #1a237e, #3949ab);">
+            <h6>Department</h6>
+            <h4>{{ teacher.department }}</h4>
+            <i class="fas fa-building fa-2x opacity-50"></i>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #00695c, #00897b);">
+            <h6>Pending Tickets</h6>
+            <h4>{{ pending_tickets }}</h4>
+            <i class="fas fa-ticket-alt fa-2x opacity-50"></i>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #e65100, #ef6c00);">
+            <h6>Recent Sessions</h6>
+            <h4>{{ sessions|length }}</h4>
+            <i class="fas fa-camera fa-2x opacity-50"></i>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-history me-2"></i> Recent Attendance Sessions
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Department</th>
+                    <th>Processed</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td>{{ session.date }}</td>
+                    <td>{{ session.department }}</td>
+                    <td>
+                        {% if session.processed %}
+                        <span class="badge bg-success">Done</span>
+                        {% else %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'session_detail' session.pk %}" class="btn btn-sm btn-primary">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted">No sessions yet</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% else %}
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-ticket-alt me-2"></i> My Tickets
+    </div>
+    <div class="card-body">
+        {% for ticket in tickets %}
+        <div class="alert alert-info">
+            <strong>{{ ticket.session.date }}</strong> —
+            <span class="badge badge-{{ ticket.status }}">{{ ticket.status|upper }}</span>
+            <br><small>{{ ticket.reason }}</small>
+        </div>
+        {% empty %}
+        <p class="text-muted text-center">No tickets raised yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Django
+db.sqlite3
+*.log
+
+# Media files
+media/
+
+# Environment
+.env
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+Desktop.ini

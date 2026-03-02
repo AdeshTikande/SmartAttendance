@@ -1,0 +1,169 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+
+<h3 class="mb-4">
+    <i class="fas fa-chart-bar me-2"></i>
+    My Attendance — {{ student.name }}
+</h3>
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#theory">
+            <i class="fas fa-book me-1"></i> Theory
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#lab">
+            <i class="fas fa-flask me-1"></i> Lab
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- THEORY TAB -->
+    <div class="tab-pane fade show active" id="theory">
+        {% if theory_data %}
+            {% for item in theory_data %}
+            <div class="card mb-3">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="mb-0">{{ item.subject.name }}</h5>
+                            <small class="text-muted">{{ item.subject.subject_code }}</small>
+                        </div>
+                        <span class="badge fs-6 {% if item.percentage >= 75 %}bg-success{% elif item.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ item.percentage }}%
+                        </span>
+                    </div>
+
+                    <div class="progress mb-2" style="height:20px;">
+                        <div class="progress-bar {% if item.percentage >= 75 %}bg-success{% elif item.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
+                             style="width:{{ item.percentage }}%">
+                            {{ item.percentage }}%
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <small class="text-muted">{{ item.present }}/{{ item.total }} attended</small>
+                        <small class="text-danger">{{ item.absent }} absent</small>
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-primary"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#th{{ for loop.counter }}">
+                        <i class="fas fa-calendar me-1"></i> View Dates
+                    </button>
+
+                    <div class="collapse mt-2" id="th{{ forloop.counter }}">
+                        <table class="table table-sm table-bordered mt-2">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Lecture No</th>
+                                    <th>Room</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in item.date_records %}
+                                <tr>
+                                    <td>{{ record.session.date }}</td>
+                                    <td>{{ record.session.lecture_slot.lecture_number|default:"—" }}</td>
+                                    <td>{{ record.session.lecture_slot.room_number|default:"—" }}</td>
+                                    <td>
+                                        {% if record.status == 'present' %}
+                                        <span class="badge bg-success">Present</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Absent</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="alert alert-info">No theory subjects found.</div>
+        {% endif %}
+    </div>
+
+    <!-- LAB TAB -->
+    <div class="tab-pane fade" id="lab">
+        {% if lab_data %}
+            {% for item in lab_data %}
+            <div class="card mb-3">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="mb-0">{{ item.subject.name }}</h5>
+                            <small class="text-muted">{{ item.subject.subject_code }}</small>
+                        </div>
+                        <span class="badge fs-6 {% if item.percentage >= 75 %}bg-success{% elif item.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ item.percentage }}%
+                        </span>
+                    </div>
+
+                    <div class="progress mb-2" style="height:20px;">
+                        <div class="progress-bar {% if item.percentage >= 75 %}bg-success{% elif item.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
+                             style="width:{{ item.percentage }}%">
+                            {{ item.percentage }}%
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <small class="text-muted">{{ item.present }}/{{ item.total }} attended</small>
+                        <small class="text-danger">{{ item.absent }} absent</small>
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-primary"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#lab{{ for loop.counter }}">
+                        <i class="fas fa-calendar me-1"></i> View Dates
+                    </button>
+
+                    <div class="collapse mt-2" id="lab{{ forloop.counter }}">
+                        <table class="table table-sm table-bordered mt-2">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Lab No</th>
+                                    <th>Room</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in item.date_records %}
+                                <tr>
+                                    <td>{{ record.session.date }}</td>
+                                    <td>{{ record.session.lecture_slot.lecture_number|default:"—" }}</td>
+                                    <td>{{ record.session.lecture_slot.room_number|default:"—" }}</td>
+                                    <td>
+                                        {% if record.status == 'present' %}
+                                        <span class="badge bg-success">Present</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Absent</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="alert alert-info">No lab subjects found.</div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

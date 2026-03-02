@@ -1,0 +1,166 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+
+<h3 class="mb-4">
+    <i class="fas fa-chart-bar me-2"></i> Analytics Dashboard
+</h3>
+
+<!-- Low Attendance Alert -->
+{% if low_attendance %}
+<div class="card mb-4">
+    <div class="card-header" style="background:linear-gradient(135deg,#c62828,#e53935);">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        Students Below 60% — {{ low_attendance|length }} Students
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Overall %</th>
+                    <th>Classes</th>
+                    <th>Report</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in low_attendance %}
+                <tr class="table-danger">
+                    <td>{{ item.student.roll_number }}</td>
+                    <td>{{ item.student.name }}</td>
+                    <td style="width:200px;">
+                        <div class="progress" style="height:20px;">
+                            <div class="progress-bar bg-danger" style="width:{{ item.overall }}%">
+                                {{ item.overall }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ item.total_present }}/{{ item.total_classes }}</td>
+                    <td>
+                        <a href="{% url 'download_report' item.student.pk %}" class="btn btn-sm btn-danger">
+                            <i class="fas fa-file-pdf me-1"></i> PDF
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-success mb-4">
+    <i class="fas fa-check-circle me-2"></i>
+    All students have attendance above 60%! 🎉
+</div>
+{% endif %}
+
+<!-- Subject Chart -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-chart-pie me-2"></i>
+        Subject-wise Average Attendance
+    </div>
+    <div class="card-body">
+        <canvas id="subjectChart" height="80"></canvas>
+    </div>
+</div>
+
+<!-- All Students -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-users me-2"></i> All Students Attendance
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Overall Attendance</th>
+                    <th>Classes</th>
+                    <th>Status</th>
+                    <th>Report</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in all_student_data %}
+                <tr>
+                    <td>{{ item.student.roll_number }}</td>
+                    <td>{{ item.student.name }}</td>
+                    <td style="width:200px;">
+                        <div class="progress" style="height:20px;">
+                            <div class="progress-bar
+                                {% if item.overall >= 75 %}bg-success
+                                {% elif item.overall >= 60 %}bg-warning
+                                {% else %}bg-danger{% endif %}" style="width:{{ item.overall }}%">
+                                {{ item.overall }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ item.total_present }}/{{ item.total_classes }}</td>
+                    <td>
+                        {% if item.overall >= 75 %}
+                        <span class="badge bg-success">Good ✅</span>
+                        {% elif item.overall >= 60 %}
+                        <span class="badge bg-warning">Average ⚠️</span>
+                        {% else %}
+                        <span class="badge bg-danger">Low ❌</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'download_report' item.student.pk %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-file-pdf me-1"></i> PDF
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted p-4">
+                        No students found!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('subjectChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for s in subject_stats %}'{{ s.subject }}',{% endfor %}],
+        datasets: [{
+            label: 'Average Attendance %',
+            data: [{% for s in subject_stats %}{{ s.average }}, {% endfor %}],
+        backgroundColor: [
+        '#1a237e', '#283593', '#303f9f',
+        '#3949ab', '#3f51b5', '#5c6bc0',
+        '#7986cb', '#9fa8da', '#c5cae9'
+    ],
+        borderRadius: 8,
+        }]
+    },
+        options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ctx.parsed.y + '%'
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { callback: v => v + '%' }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

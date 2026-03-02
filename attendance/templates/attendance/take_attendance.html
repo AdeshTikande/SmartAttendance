@@ -1,0 +1,111 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-camera me-2"></i> Take Attendance
+    </div>
+    <div class="card-body p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+
+                <!-- Subject -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Subject</label>
+                    <select name="subject" class="form-control" required>
+                        <option value="">-- Select Subject --</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">
+                            {{ subject.name }} ({{ subject.subject_code }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Time Slot -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                        Time Slot
+                        <small class="text-muted">
+                            (Auto-selected: {{ current_slot }})
+                        </small>
+                    </label>
+                    <select name="time_slot" class="form-control" required id="timeSlot">
+                        <option value="">-- Select Time Slot --</option>
+                        <option value="9:15-10:10">9:15 - 10:10</option>
+                        <option value="10:10-11:05">10:10 - 11:05</option>
+                        <option value="11:05-12:00">11:05 - 12:00</option>
+                        <option value="12:45-1:40">12:45 - 1:40</option>
+                        <option value="1:40-2:35">1:40 - 2:35</option>
+                        <option value="2:45-3:40">2:45 - 3:40</option>
+                        <option value="3:40-4:35">3:40 - 4:35</option>
+                    </select>
+                </div>
+
+                <!-- Lecture Number -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">
+                        Lecture Number
+                        <small class="text-muted">(Auto)</small>
+                    </label>
+                    <input type="number" name="lecture_number" class="form-control" value="{{ next_lecture_number }}"
+                        min="1" required>
+                </div>
+
+                <!-- Room Number -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Room Number</label>
+                    <input type="text" name="room_number" class="form-control" placeholder="e.g. 301, Lab-3"
+                        value="{{ default_room }}" required>
+                </div>
+
+                <!-- Date -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Date</label>
+                    <input type="text" name="date_display" class="form-control" value="{{ today }}" readonly
+                        style="background:#f8f9fa;">
+                </div>
+
+                <!-- Group Photo -->
+                <div class="col-md-12 mb-3">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-image me-2"></i>
+                        Upload Group Photo
+                    </label>
+                    <input type="file" name="group_photo" class="form-control" accept="image/*" required>
+                    <small class="text-muted">
+                        Clear photo with all students visible for best accuracy.
+                    </small>
+                </div>
+
+                <!-- Current Time Info -->
+                <div class="col-12 mb-3">
+                    <div class="alert alert-info py-2">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>Current Time:</strong> {{ current_time }}
+                        &nbsp;|&nbsp;
+                        <strong>Day:</strong> {{ current_day }}
+                        &nbsp;|&nbsp;
+                        <strong>Date:</strong> {{ today }}
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary px-5">
+                <i class="fas fa-check me-2"></i> Mark Attendance
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Auto select current time slot -->
+<script>
+    var currentSlot = "{{ current_slot_value }}";
+    if (currentSlot) {
+        document.getElementById('timeSlot').value = currentSlot;
+    }
+</script>
+
+{% endblock %}

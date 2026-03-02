@@ -1,0 +1,47 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-user-plus me-2"></i> Add New Student
+    </div>
+    <div class="card-body p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Roll Number</label>
+                    <input type="text" name="roll_number" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Full Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Department</label>
+                    <select name="department" class="form-control" required>
+                        <option value="">-- Select Department --</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}">{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Reference Photo</label>
+                    <input type="file" name="reference_image" class="form-control" accept="image/*" required>
+                    <small class="text-muted">Clear front-facing photo</small>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="fas fa-save me-2"></i> Save Student
+            </button>
+            <a href="{% url 'student_list' %}" class="btn btn-secondary px-4 ms-2">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'attendance/base.html' %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-file-excel me-2"></i> Bulk Upload Students
+    </div>
+    <div class="card-body p-4">
+
+        <!-- Download Sample -->
+        <div class="alert alert-info mb-4">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Step 1:</strong> Download the sample Excel template,
+            fill in student details, then upload.
+            <br>
+            <a href="/media/sample_students.xlsx" class="btn btn-sm btn-info mt-2" download>
+                <i class="fas fa-download me-1"></i>
+                Download Sample Excel Template
+            </a>
+        </div>
+
+        <!-- Excel Format Info -->
+        <div class="card mb-4 border-primary">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3">
+                    <i class="fas fa-table me-2"></i>
+                    Excel Format Required:
+                </h6>
+                <table class="table table-bordered table-sm">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Column A</th>
+                            <th>Column B</th>
+                            <th>Column C</th>
+                            <th>Column D</th>
+                            <th>Column E</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Roll Number</td>
+                            <td>Name</td>
+                            <td>Phone</td>
+                            <td>Email</td>
+                            <td>Department</td>
+                        </tr>
+                        <tr class="text-muted">
+                            <td>TE23CS001</td>
+                            <td>Rahul Sharma</td>
+                            <td>9876543210</td>
+                            <td>rahul@gmail.com</td>
+                            <td>Computer Engineering TE-B</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Upload Form -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-upload me-2"></i>
+                    Upload Excel File (.xlsx)
+                </label>
+                <input type="file" name="excel_file" class="form-control" accept=".xlsx" required>
+                <small class="text-muted">
+                    Only .xlsx files supported. Max 1000 students per upload.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="fas fa-users me-2"></i> Upload Students
+            </button>
+            <a href="{% url 'student_list' %}" class="btn btn-secondary ms-2 px-4">
+                Cancel
+            </a>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
