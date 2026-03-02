@@ -1,0 +1,7 @@
+django
+twilio
+reportlab
+openpyxl
+whitenoise
+gunicorn
+pillow
