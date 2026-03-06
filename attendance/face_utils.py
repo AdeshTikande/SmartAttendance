@@ -142,7 +142,7 @@ def encode_student_face(student):
 #         ).exclude(face_encoding='')
 
 #         present_count = 0
-#         SIMILARITY_THRESHOLD = 0.5
+#         SIMILARITY_THRESHOLD = 0.30
 
 #         for student in students:
 #             try:
